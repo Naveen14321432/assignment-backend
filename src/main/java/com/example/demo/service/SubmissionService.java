@@ -11,6 +11,8 @@ import com.example.demo.repository.AssignmentRepository;
 import com.example.demo.repository.SubmissionRepository;
 import com.example.demo.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -48,6 +50,23 @@ public class SubmissionService {
         submissionDTO.setSubmissionDate(savedSubmission.getSubmissionDate());
         return submissionDTO;
     }
+    
+    @Transactional
+    public List<SubmissionDTO> getAllSubmissions() {
+        List<Submission> submissions = submissionRepository.findAll();
+        return submissions.stream()
+            .map(submission -> {
+                SubmissionDTO dto = new SubmissionDTO();
+                dto.setId(submission.getId());
+                dto.setAssignmentId(submission.getAssignment().getId());
+                dto.setStudentUsername(submission.getStudent().getUsername()); // Access lazy field here
+                dto.setSubmissionDate(submission.getSubmissionDate());
+                dto.setFileUrl(submission.getFileUrl());
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
+
 
     // Fetch submissions by student
     public List<SubmissionDTO> getSubmissionsByStudent(Long studentId) {

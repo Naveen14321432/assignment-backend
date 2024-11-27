@@ -52,4 +52,10 @@ public class SubmissionController {
             return ResponseEntity.internalServerError().body(null);
         }
     }
+    
+    @GetMapping
+    public List<SubmissionDTO> getAllSubmissions() {
+        return submissionService.getAllSubmissions();
+    }
+
 }

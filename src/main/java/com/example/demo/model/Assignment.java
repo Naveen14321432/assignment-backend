@@ -15,7 +15,7 @@ public class Assignment {
     private String description;
     private LocalDate dueDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
 

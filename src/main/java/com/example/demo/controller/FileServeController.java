@@ -23,14 +23,10 @@ public class FileServeController {
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
         try {
-            // Construct the full file path
         	//System.out.println("Requested file: " + fileName);
-
             Path file = Paths.get("D:/project files/uploads").resolve(fileName).normalize();
             Resource resource = new UrlResource(file.toUri());
            // System.out.println("Requested file: " + fileName);
-
-            // Check if the file exists and is readable
             if (resource.exists() && resource.isReadable()) {
                 MediaType mediaType = fileName.endsWith(".pdf") ? MediaType.APPLICATION_PDF : MediaType.APPLICATION_OCTET_STREAM;
                 return ResponseEntity.ok()

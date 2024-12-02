@@ -31,7 +31,6 @@ public class SubmissionService {
     @Autowired
     private UserRepository userRepository;
 
-    // Existing JSON-based submission handling
     public SubmissionDTO submitAssignment(SubmissionDTO submissionDTO) {
         Assignment assignment = assignmentRepository.findById(submissionDTO.getAssignmentId())
                 .orElseThrow(() -> new RuntimeException("Assignment not found"));
@@ -59,7 +58,7 @@ public class SubmissionService {
                 SubmissionDTO dto = new SubmissionDTO();
                 dto.setId(submission.getId());
                 dto.setAssignmentId(submission.getAssignment().getId());
-                dto.setStudentUsername(submission.getStudent().getUsername()); // Access lazy field here
+                dto.setStudentUsername(submission.getStudent().getUsername());
                 dto.setSubmissionDate(submission.getSubmissionDate());
                 dto.setFileUrl(submission.getFileUrl());
                 return dto;
@@ -67,8 +66,6 @@ public class SubmissionService {
             .collect(Collectors.toList());
     }
 
-
-    // Fetch submissions by student
     public List<SubmissionDTO> getSubmissionsByStudent(Long studentId) {
         return submissionRepository.findByStudentId(studentId).stream()
                 .map(submission -> new SubmissionDTO(
@@ -80,14 +77,12 @@ public class SubmissionService {
                 .collect(Collectors.toList());
     }
 
-    // New method for handling file uploads
     public SubmissionDTO uploadAssignment(Long assignmentId, String studentUsername, MultipartFile file) throws IOException {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new RuntimeException("Assignment not found"));
         User student = userRepository.findByUsername(studentUsername)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // Save file to uploads directory
         String uploadDir = "uploads/";
         File directory = new File(uploadDir);
         if (!directory.exists()) {
@@ -96,7 +91,6 @@ public class SubmissionService {
         String filePath = uploadDir + file.getOriginalFilename();
         file.transferTo(new File(filePath));
 
-        // Create and save submission record
         Submission submission = new Submission();
         submission.setAssignment(assignment);
         submission.setStudent(student);
@@ -114,26 +108,22 @@ public class SubmissionService {
     }
     
     public SubmissionDTO saveSubmission(SubmissionDTO submissionDTO) {
-        // Fetch the assignment and student based on the IDs provided in SubmissionDTO
         Assignment assignment = assignmentRepository.findById(submissionDTO.getAssignmentId())
                 .orElseThrow(() -> new RuntimeException("Assignment not found"));
         User student = userRepository.findByUsername(submissionDTO.getStudentUsername())
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // Create a Submission entity and populate it with data from the DTO
         Submission submission = new Submission();
         submission.setAssignment(assignment);
         submission.setStudent(student);
         submission.setFileUrl(submissionDTO.getFileUrl());
         submission.setSubmissionDate(submissionDTO.getSubmissionDate() != null ? submissionDTO.getSubmissionDate() : LocalDateTime.now());
 
-        // Save the Submission entity to the database
         Submission savedSubmission = submissionRepository.save(submission);
 
-        // Populate the DTO with the saved entity's details
         submissionDTO.setId(savedSubmission.getId());
         submissionDTO.setSubmissionDate(savedSubmission.getSubmissionDate());
 
-        return submissionDTO;  // Return the populated DTO
+        return submissionDTO;  
     }
 }

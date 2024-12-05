@@ -126,4 +126,31 @@ public class SubmissionService {
 
         return submissionDTO;  
     }
+    
+    @Transactional
+    public SubmissionDTO gradeSubmission(Long submissionId, String grade) {
+        // Fetch the submission by ID
+        Submission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new RuntimeException("Submission not found"));
+
+        // Update the grade
+        submission.setGrade(grade);
+
+        // Save the updated submission
+        Submission updatedSubmission = submissionRepository.save(submission);
+
+        // Map the updated Submission to SubmissionDTO
+        SubmissionDTO submissionDTO = new SubmissionDTO();
+        submissionDTO.setId(updatedSubmission.getId());
+        submissionDTO.setAssignmentId(updatedSubmission.getAssignment().getId());
+        submissionDTO.setStudentUsername(updatedSubmission.getStudent().getUsername());
+        submissionDTO.setFileUrl(updatedSubmission.getFileUrl());
+        submissionDTO.setSubmissionDate(updatedSubmission.getSubmissionDate());
+        submissionDTO.setGrade(updatedSubmission.getGrade());
+
+        // Return the DTO
+        return submissionDTO;
+    }
+
+
 }

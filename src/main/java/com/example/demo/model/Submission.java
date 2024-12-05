@@ -18,8 +18,16 @@ public class Submission {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
+    private String grade;
+    public String getGrade() {
+		return grade;
+	}
 
-    private String fileUrl; 
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	private String fileUrl; 
     private LocalDateTime submissionDate;
 
     // Constructors, Getters and Setters

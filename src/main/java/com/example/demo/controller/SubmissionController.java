@@ -57,5 +57,16 @@ public class SubmissionController {
     public List<SubmissionDTO> getAllSubmissions() {
         return submissionService.getAllSubmissions();
     }
+    
+    @PutMapping("/{id}/grade")
+    public ResponseEntity<SubmissionDTO> gradeSubmission(@PathVariable Long id, @RequestBody SubmissionDTO gradeRequest) {
+        try {
+            String grade = gradeRequest.getGrade();
+            SubmissionDTO submissionDTO = submissionService.gradeSubmission(id, grade);
+            return ResponseEntity.ok(submissionDTO); // Return the updated submission with grade
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }

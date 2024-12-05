@@ -5,8 +5,17 @@ import java.time.LocalDateTime;
 public class SubmissionDTO {
 
     private Long id; 
-    private Long assignmentId; 
-    private String studentUsername; 
+    private Long assignmentId;
+    private String grade;
+    public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	private String studentUsername; 
     private String fileUrl; 
     private LocalDateTime submissionDate; 
 

@@ -67,8 +67,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-
-
     @GetMapping("/allusers")
     public List<UserDTO> getAllUsers(){
         return userService.getAllUsers().stream()

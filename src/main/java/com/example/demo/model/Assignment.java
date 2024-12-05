@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "assignments")
@@ -18,6 +19,9 @@ public class Assignment {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
+	
+	@OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Submission> submissions;
 
     // Default constructor
     public Assignment() {

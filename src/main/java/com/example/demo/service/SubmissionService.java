@@ -61,19 +61,46 @@ public class SubmissionService {
                 dto.setStudentUsername(submission.getStudent().getUsername());
                 dto.setSubmissionDate(submission.getSubmissionDate());
                 dto.setFileUrl(submission.getFileUrl());
+                dto.setGrade(submission.getGrade());
                 return dto;
             })
             .collect(Collectors.toList());
     }
+    
+    @Transactional
+    public List<SubmissionDTO> getSubmissionsByAssignment(Long assignmentId) {
+        // Fetch all submissions related to a specific assignment
+        List<Submission> submissions = submissionRepository.findByAssignmentId(assignmentId);
 
+        // Convert the list of submissions to SubmissionDTO
+        return submissions.stream()
+                .map(submission -> {
+                    SubmissionDTO dto = new SubmissionDTO();
+                    dto.setId(submission.getId());
+                    dto.setAssignmentId(submission.getAssignment().getId());
+                    dto.setStudentUsername(submission.getStudent().getUsername());
+                    dto.setFileUrl(submission.getFileUrl());
+                    dto.setSubmissionDate(submission.getSubmissionDate());
+                    dto.setGrade(submission.getGrade());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    @Transactional
     public List<SubmissionDTO> getSubmissionsByStudent(Long studentId) {
         return submissionRepository.findByStudentId(studentId).stream()
-                .map(submission -> new SubmissionDTO(
-                        submission.getId(),
-                        submission.getAssignment().getId(),
-                        submission.getStudent().getUsername(),
-                        submission.getFileUrl(),
-                        submission.getSubmissionDate()))
+                .map(submission -> {
+                    SubmissionDTO dto = new SubmissionDTO();
+                    dto.setId(submission.getId());
+                    dto.setAssignmentId(submission.getAssignment().getId());
+                    dto.setStudentUsername(submission.getStudent().getUsername());
+                    dto.setFileUrl(submission.getFileUrl());
+                    dto.setSubmissionDate(submission.getSubmissionDate());
+                    dto.setGrade(submission.getGrade()); 
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -129,17 +156,14 @@ public class SubmissionService {
     
     @Transactional
     public SubmissionDTO gradeSubmission(Long submissionId, String grade) {
-        // Fetch the submission by ID
+
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new RuntimeException("Submission not found"));
 
-        // Update the grade
         submission.setGrade(grade);
 
-        // Save the updated submission
         Submission updatedSubmission = submissionRepository.save(submission);
 
-        // Map the updated Submission to SubmissionDTO
         SubmissionDTO submissionDTO = new SubmissionDTO();
         submissionDTO.setId(updatedSubmission.getId());
         submissionDTO.setAssignmentId(updatedSubmission.getAssignment().getId());
@@ -148,7 +172,6 @@ public class SubmissionService {
         submissionDTO.setSubmissionDate(updatedSubmission.getSubmissionDate());
         submissionDTO.setGrade(updatedSubmission.getGrade());
 
-        // Return the DTO
         return submissionDTO;
     }
 

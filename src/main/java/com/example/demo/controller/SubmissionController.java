@@ -26,10 +26,24 @@ public class SubmissionController {
         return submissionService.submitAssignment(submissionDTO);
     }
 
-    @GetMapping("/student/{studentId}")
-    public List<SubmissionDTO> getSubmissionsByStudent(@PathVariable Long studentId) {
-        return submissionService.getSubmissionsByStudent(studentId);
+    @GetMapping("/submissions/student/{studentId}")
+    public ResponseEntity<?> getSubmissionsByStudent(@PathVariable Long studentId) {
+        if (studentId == null) {
+            return ResponseEntity.badRequest().body("Invalid student ID");
+        }
+
+        // Continue with fetching the submissions
+        List<SubmissionDTO> submissions = submissionService.getSubmissionsByStudent(studentId);
+        return ResponseEntity.ok(submissions);
     }
+
+    
+    @GetMapping("/assignment/{assignmentId}")
+    public ResponseEntity<List<SubmissionDTO>> getSubmissionsByAssignment(@PathVariable Long assignmentId) {
+        List<SubmissionDTO> submissions = submissionService.getSubmissionsByAssignment(assignmentId);
+        return ResponseEntity.ok(submissions);
+    }
+
 
     @PostMapping("/upload")
     public ResponseEntity<SubmissionDTO> uploadAssignment(
@@ -63,7 +77,7 @@ public class SubmissionController {
         try {
             String grade = gradeRequest.getGrade();
             SubmissionDTO submissionDTO = submissionService.gradeSubmission(id, grade);
-            return ResponseEntity.ok(submissionDTO); // Return the updated submission with grade
+            return ResponseEntity.ok(submissionDTO); 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

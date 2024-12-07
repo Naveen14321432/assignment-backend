@@ -28,16 +28,12 @@ public class UserService {
             return "Password cannot be null or empty";
         }
 
-        // Remove password encoding
-        // user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "Registered Successfully";
     }
     
     public void registerAdmin(User user) {
-        user.setRole("admin"); // Set the role to admin
-        // Remove password encoding
-        // user.setPassword(passwordEncoder.encode(user.getPassword())); 
+        user.setRole("admin");
         userRepository.save(user);
     }
     
@@ -48,19 +44,19 @@ public class UserService {
             User foundUser = existingUser.get();
             if (user.getPassword().equals(foundUser.getPassword())) {
                 if ("admin".equalsIgnoreCase(foundUser.getRole())) {
-                    return "Admin login successful"; // Admin login successful
+                    return "Admin login successful"; 
                 }else if("teacher".equalsIgnoreCase(foundUser.getRole())) {
                 	return "Teacher login successful";
                 } else if("student".equalsIgnoreCase(foundUser.getRole())){
-                    return "Student login successful"; // Regular user login successful
+                    return "Student login successful"; 
                 } else {
                 	return "User role doesnot recognized";
                 }
             } else {
-                return "Invalid password"; // Password incorrect
+                return "Invalid password"; 
             }
         } else {
-            return "User not found"; // User does not exist
+            return "User not found";
         }
     }
 
@@ -83,9 +79,7 @@ public class UserService {
             userToUpdate.setRole(updatedUser.getRole());
 
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-                // Remove password encoding
-                // userToUpdate.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-                userToUpdate.setPassword(updatedUser.getPassword()); // Save as plain text
+                userToUpdate.setPassword(updatedUser.getPassword());
             }
 
             userRepository.save(userToUpdate);

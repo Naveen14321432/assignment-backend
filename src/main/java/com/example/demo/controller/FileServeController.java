@@ -16,17 +16,12 @@ import java.nio.file.Paths;
 
 @RestController
 public class FileServeController {
-
-   // private static final String UPLOAD_DIR = "D:/project files/uploads/";
-
     @RequestMapping("/uploads/{fileName:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
         try {
-        	//System.out.println("Requested file: " + fileName);
             Path file = Paths.get("D:/project files/uploads").resolve(fileName).normalize();
             Resource resource = new UrlResource(file.toUri());
-           // System.out.println("Requested file: " + fileName);
             if (resource.exists() && resource.isReadable()) {
                 MediaType mediaType = fileName.endsWith(".pdf") ? MediaType.APPLICATION_PDF : MediaType.APPLICATION_OCTET_STREAM;
                 return ResponseEntity.ok()
@@ -40,5 +35,4 @@ public class FileServeController {
             throw new RuntimeException("Could not read the file: " + fileName, e);
         }
     }
-
 }
